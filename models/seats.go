@@ -1,17 +1,17 @@
 package models
 
 type Seat struct {
-	ID       uint   `json:"id" gorm:"primaryKey"`
-	Class    string `json:"class"`
-	IsBooked bool   `json:"is_booked"`
+	ID             uint   `json:"id" gorm:"primaryKey"`
+	SeatIdentifier string `json:"seat_identifier"`
+	SeatClass      string `json:"seat_class"`
 }
 
 type SeatPricing struct {
 	ID            uint    `json:"id" gorm:"primaryKey"`
 	SeatClass     string  `json:"seat_class"`
 	MinPrice      float64 `json:"min_price"`
-	MaxPrice      float64 `json:"max_price"`
 	NormalPrice   float64 `json:"normal_price"`
+	MaxPrice      float64 `json:"max_price"`
 	Bookings      int     `json:"bookings"`
 	BookingsCount uint    `json:"bookings_count" gorm:"-"`
 }

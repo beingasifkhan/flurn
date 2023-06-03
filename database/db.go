@@ -15,19 +15,7 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
-
-	err = db.AutoMigrate(&models.Seat{})
-	if err != nil {
-		panic("Failed to migrate the Seat struct: " + err.Error())
-	}
-	err = db.AutoMigrate(&models.Booking{})
-	if err != nil {
-		panic("failed to create table")
-	}
-	err = db.AutoMigrate(&models.SeatPricing{})
-	if err != nil {
-		panic("failed to create table")
-	}
+	db.AutoMigrate(&models.Seat{}, &models.SeatPricing{}, &models.Booking{})
 
 	DB = db
 	return nil

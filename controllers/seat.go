@@ -62,19 +62,6 @@ func GetSeatPricing(c *gin.Context) {
 		"price": price,
 	})
 }
-func maxBookingsForSeatClass(seatClass string) int {
-
-	switch seatClass {
-	case "FirstClass":
-		return 35
-	case "BusinessClass":
-		return 25
-	case "EconomyClass":
-		return 40
-	default:
-		return 0
-	}
-}
 func CreateBooking(c *gin.Context) {
 	var bookingReq models.BookingRequest
 
@@ -179,4 +166,31 @@ func calculateTotalAmount(seatIDs []uint) (float64, error) {
 	}
 
 	return totalAmount, nil
+}
+
+func maxBookingsForSeatClass(seatClass string) int {
+	switch seatClass {
+	case "A":
+		return 20
+	case "B":
+		return 22
+	case "C":
+		return 26
+	case "D":
+		return 17
+	case "E":
+		return 22
+	case "F":
+		return 19
+	case "G":
+		return 27
+	case "H":
+		return 23
+	case "I":
+		return 22
+	case "J":
+		return 24
+	default:
+		return 0
+	}
 }
