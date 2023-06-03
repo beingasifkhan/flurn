@@ -69,6 +69,66 @@ func Connect() error {
 
 	fmt.Println("CSV data inserted into the database.")
 
+	file2, err := os.Open("seats_price.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file2.Close()
+
+	// Create a new CSV reader for the second file
+	reader2 := csv.NewReader(bufio.NewReader(file2))
+
+	// Read the CSV records from the second file
+	records2, err := reader2.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Iterate over the records from the second file and insert them into the database
+	for _, record := range records2 {
+		// Parse the record values
+		id, err := strconv.Atoi(record[0])
+		if err != nil {
+			log.Printf("Invalid ID for record: %v", record)
+			continue
+		}
+
+		minPrice, err := strconv.ParseFloat(record[2], 64)
+		if err != nil {
+			log.Printf("Invalid min price for record: %v", record)
+			continue
+		}
+
+		normalPrice, err := strconv.ParseFloat(record[3], 64)
+		if err != nil {
+			log.Printf("Invalid normal price for record: %v", record)
+			continue
+		}
+
+		maxPrice, err := strconv.ParseFloat(record[4], 64)
+		if err != nil {
+			log.Printf("Invalid max price for record: %v", record)
+			continue
+		}
+
+		seatPricing := models.SeatPricing{
+			ID:          uint(id),
+			SeatClass:   record[1],
+			MinPrice:    minPrice,
+			NormalPrice: normalPrice,
+			MaxPrice:    maxPrice,
+		}
+
+		// Insert the seat pricing into the database
+		result := db.Create(&seatPricing)
+		if result.Error != nil {
+			log.Printf("Error inserting seat pricing: %v", result.Error)
+			continue
+		}
+
+		log.Printf("Seat pricing inserted successfully: ID=%d", seatPricing.ID)
+	}
+
 	DB = db
 	return nil
 }
