@@ -1,3 +1,4 @@
+id,seat_class,min_price,normal_price,max_price
 1,A,,$397.61,$547.20
 2,B,$183.44,$441.65,$766.96
 3,C,$158.47,$449.40,$678.55
