@@ -17,10 +17,6 @@ func GetAllSeats(c *gin.Context) {
 		return
 	}
 
-	for i := range seats {
-		seats[i].IsBooked = seats[i].IsBooked
-	}
-
 	c.JSON(http.StatusOK, seats)
 }
 
