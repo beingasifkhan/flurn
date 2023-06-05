@@ -13,7 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	r := gin.Default()
 
 	r.GET("/seats", controllers.GetAllSeats)

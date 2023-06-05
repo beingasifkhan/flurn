@@ -21,10 +21,24 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
-	db.AutoMigrate(&models.Seat{}, &models.SeatPricing{}, &models.Booking{})
+	db.AutoMigrate(&models.Seat{}, &models.SeatPricing{}, &models.Users{}, &models.Bookings{})
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	users := []models.Users{
+		{UserName: "Asif", Email: "beingasifkhan17@gmail.com", PhoneNumber: "7977148296"},
+		{UserName: "Salman", Email: "asnx@gmail.com", PhoneNumber: "9619866554"},
+		{UserName: "Shah Rukh", Email: "beingsana@gamil.com", PhoneNumber: "9930627430"},
+	}
+
+	// Insert the users into the database
+	result := db.Create(&users)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
+
+	fmt.Println("Users inserted successfully")
 
 	// Open the CSV file
 	file, err := os.Open("seats.csv")
@@ -52,7 +66,7 @@ func Connect() error {
 		}
 
 		seat := models.Seat{
-			ID:             uint(id),
+			ID:             int(id),
 			SeatIdentifier: record[1],
 			SeatClass:      record[2],
 		}
@@ -112,11 +126,11 @@ func Connect() error {
 		}
 
 		seatPricing := models.SeatPricing{
-			ID:          uint(id),
-			SeatClass:   record[1],
-			MinPrice:    minPrice,
-			NormalPrice: normalPrice,
-			MaxPrice:    maxPrice,
+			SeatPricingId: (id),
+			SeatClass:     record[1],
+			MinPrice:      minPrice,
+			NormalPrice:   normalPrice,
+			MaxPrice:      maxPrice,
 		}
 
 		// Insert the seat pricing into the database
@@ -126,9 +140,9 @@ func Connect() error {
 			continue
 		}
 
-		log.Printf("Seat pricing inserted successfully: ID=%d", seatPricing.ID)
-	}
+		log.Printf("Seat pricing inserted successfully: ID=%d", seatPricing.SeatPricingId)
 
+	}
 	DB = db
 	return nil
 }
