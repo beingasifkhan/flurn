@@ -3,12 +3,14 @@ package main
 import (
 	"flurn_assignment/controllers"
 	"flurn_assignment/database"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	fmt.Println("Welcome to Flurn API's")
 	err := database.Connect()
 	if err != nil {
 		log.Fatal(err)

@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -93,18 +94,18 @@ func CreateBooking(c *gin.Context) {
 	// Create new booking record
 	booking := models.Bookings{
 		BookingsPid:   bookingPID,
-		SeatIDs:       make([]uint, len(requestBody.SeatIDs)),
+		SeatIDs:       requestBody.SeatIDs,
 		UserName:      requestBody.UserName,
 		PhoneNumber:   requestBody.PhoneNumber,
 		UserID:        user.UserID,
 		BookingAmount: totalAmount,
 	}
-
 	err = database.DB.Create(&booking).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	err = database.DB.Model(&models.Seat{}).Where("id IN (?)", requestBody.SeatIDs).Update("is_booked", true).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": "Booking created, but seat status update failed"})
@@ -116,7 +117,10 @@ func CreateBooking(c *gin.Context) {
 		"phone_number": requestBody.PhoneNumber,
 		"booking_id":   booking.BookingsId,
 		"booking_pid":  booking.BookingsPid,
+		"seat_ids":     booking.SeatIDs,
 		"amount":       formattedAmount,
+		"created_at":   time.Now(),
+		"updated_at":   time.Now(),
 	}
 
 	c.JSON(http.StatusOK, bookingDetails)
@@ -135,7 +139,7 @@ func GetBookings(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
-	// Retrieve the bookings for the user
+	//Retrieve the bookings for the user
 	var bookings []models.Bookings
 	if err := database.DB.Where("user_id = ?", user.UserID).Find(&bookings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve bookings"})
