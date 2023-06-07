@@ -21,6 +21,8 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
+	dropTables(db)
+
 	db.AutoMigrate(&models.Seat{}, &models.SeatPricing{}, &models.Users{}, &models.Bookings{})
 	if err != nil {
 		log.Fatal(err)
@@ -65,10 +67,17 @@ func Connect() error {
 			continue
 		}
 
+		isBooked, err := strconv.ParseBool(record[3])
+		if err != nil {
+			log.Printf("Invalid IsBooked value for record: %v", record)
+			continue
+		}
+
 		seat := models.Seat{
 			ID:             int(id),
 			SeatIdentifier: record[1],
 			SeatClass:      record[2],
+			IsBooked:       isBooked,
 		}
 
 		// Insert the seat into the database
@@ -145,4 +154,10 @@ func Connect() error {
 	}
 	DB = db
 	return nil
+}
+func dropTables(db *gorm.DB) {
+	db.Migrator().DropTable(&models.Seat{})
+	db.Migrator().DropTable(&models.SeatPricing{})
+	db.Migrator().DropTable(&models.Users{})
+	db.Migrator().DropTable(&models.Bookings{})
 }

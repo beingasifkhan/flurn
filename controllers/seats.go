@@ -21,10 +21,10 @@ func GetAllSeats(c *gin.Context) {
 }
 
 func GetSeatPricing(c *gin.Context) {
-	Id := c.Param("id")
+	SeatIdentifier := c.Param("seat_identifier")
 
 	var seat models.Seat
-	err := database.DB.Where("id = ?", Id).First(&seat).Error
+	err := database.DB.Where("seat_identifier = ?", SeatIdentifier).First(&seat).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -37,7 +37,7 @@ func GetSeatPricing(c *gin.Context) {
 		return
 	}
 
-	percentage, err := calculatePercentageBooked(seat.SeatClass)
+	percentage, err := CalculatePercentageBooked(seat.SeatClass)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -65,14 +65,14 @@ func GetSeatPricing(c *gin.Context) {
 	}
 
 	// Return seat details along with pricing
-	seatDetails := gin.H{
-		"seat_id":         Id,
-		"seat_identifier": seat.SeatIdentifier,
-		"seat_class":      seat.SeatClass,
-		"price":           price,
-		"percentage":      percentage,
-		"created_at":      time.Now(),
-		"update_at":       time.Now(),
+	seatDetails := models.SeatDetails{
+		SeatID:         seat.ID,
+		SeatIdentifier: SeatIdentifier,
+		SeatClass:      seat.SeatClass,
+		Price:          price,
+		Percentage:     percentage,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	c.JSON(http.StatusOK, seatDetails)

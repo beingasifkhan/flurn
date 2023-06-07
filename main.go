@@ -18,7 +18,7 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/seats", controllers.GetAllSeats)
-	r.GET("/seats/:id", controllers.GetSeatPricing)
+	r.GET("/seats/:seat_identifier", controllers.GetSeatPricing)
 	r.POST("/booking", controllers.CreateBooking)
 	r.GET("/bookings", controllers.GetBookings)
 

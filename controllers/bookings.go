@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"crypto/rand"
 	"flurn_assignment/database"
 	"flurn_assignment/models"
 	"fmt"
 	"math"
-	"math/big"
 	"net/http"
 	"strconv"
 	"time"
@@ -48,7 +46,7 @@ func CreateBooking(c *gin.Context) {
 		}
 
 		// Calculate percentage of seats booked
-		percentage, err := calculatePercentageBooked(seat.SeatClass)
+		percentage, err := CalculatePercentageBooked(seat.SeatClass)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -85,11 +83,7 @@ func CreateBooking(c *gin.Context) {
 	}
 
 	// Generate booking PID (unique identifier)
-	bookingPID, err := generateBookingPID(8)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-	}
+	bookingPID := GeneratePID()
 
 	// Create new booking record
 	booking := models.Bookings{
@@ -100,6 +94,7 @@ func CreateBooking(c *gin.Context) {
 		UserID:        user.UserID,
 		BookingAmount: totalAmount,
 	}
+
 	err = database.DB.Create(&booking).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -112,15 +107,15 @@ func CreateBooking(c *gin.Context) {
 	}
 
 	// Return booking details
-	bookingDetails := gin.H{
-		"user_name":    requestBody.UserName,
-		"phone_number": requestBody.PhoneNumber,
-		"booking_id":   booking.BookingsId,
-		"booking_pid":  booking.BookingsPid,
-		"seat_ids":     booking.SeatIDs,
-		"amount":       formattedAmount,
-		"created_at":   time.Now(),
-		"updated_at":   time.Now(),
+	bookingDetails := models.BookingDetails{
+		UserName:    requestBody.UserName,
+		PhoneNumber: requestBody.PhoneNumber,
+		BookingID:   booking.BookingsId,
+		BookingPID:  booking.BookingsPid,
+		SeatIDs:     booking.SeatIDs,
+		Amount:      formattedAmount,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	c.JSON(http.StatusOK, bookingDetails)
@@ -148,34 +143,4 @@ func GetBookings(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"bookings": bookings})
-}
-
-// Calculate percentage of seats booked for a given seat class
-func calculatePercentageBooked(seatClass string) (float64, error) {
-	var totalSeats, bookedSeats int64
-	err := database.DB.Model(&models.Seat{}).Where("seat_class = ?", seatClass).Count(&totalSeats).Error
-	if err != nil {
-		return 0, err
-	}
-
-	err = database.DB.Model(&models.Seat{}).Where("seat_class = ? AND is_booked = true", seatClass).Count(&bookedSeats).Error
-	if err != nil {
-		return 0, err
-	}
-
-	percentage := float64(bookedSeats) / float64(totalSeats) * 100
-	return percentage, nil
-}
-
-func generateBookingPID(length int) (string, error) {
-	const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	pid := make([]byte, length)
-	for i := 0; i < length; i++ {
-		randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		if err != nil {
-			return "", err
-		}
-		pid[i] = charset[randomIndex.Int64()]
-	}
-	return string(pid), nil
 }
