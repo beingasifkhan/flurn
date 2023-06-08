@@ -10,12 +10,12 @@ import (
 )
 
 func main() {
-	fmt.Println("Welcome to Flurn API's")
 	err := database.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
 	r := gin.Default()
+	fmt.Println("Welcome to Flurn API's")
 
 	r.GET("/seats", controllers.GetAllSeats)
 	r.GET("/seats/:seat_identifier", controllers.GetSeatPricing)

@@ -19,7 +19,6 @@ func CreateBooking(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	// Check if selected seats are available
 	var seats []models.Seat
 	err := database.DB.Find(&seats, requestBody.SeatIDs).Error
@@ -77,6 +76,11 @@ func CreateBooking(c *gin.Context) {
 
 	var user models.Users
 	err = database.DB.Where(" phone_number = ?", requestBody.PhoneNumber).First(&user).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	err = database.DB.Where(" user_name = ?", requestBody.UserName).First(&user).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

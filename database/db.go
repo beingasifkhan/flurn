@@ -30,8 +30,8 @@ func Connect() error {
 
 	users := []models.Users{
 		{UserName: "Asif", Email: "beingasifkhan17@gmail.com", PhoneNumber: "7977148296"},
-		{UserName: "Salman", Email: "asnx@gmail.com", PhoneNumber: "9619866554"},
-		{UserName: "Shah Rukh", Email: "beingsana@gamil.com", PhoneNumber: "9930627430"},
+		{UserName: "Anas", Email: "anaxgmail.com", PhoneNumber: "9619866554"},
+		{UserName: "Akshay", Email: "akshayPJ@gamil.com", PhoneNumber: "9930627430"},
 	}
 
 	// Insert the users into the database
