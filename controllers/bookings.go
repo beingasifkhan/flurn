@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"flurn_assignment/database"
-	"flurn_assignment/models"
+	"T_Booking_System/database"
+	"T_Booking_System/models"
 	"fmt"
 	"math"
 	"net/http"

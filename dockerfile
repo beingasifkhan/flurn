@@ -1,5 +1,5 @@
-# Start from the official Go base image with Go version 1.20
-FROM golang:1.20-alpine
+# Start from the official Go base image with Go version 1.17
+FROM golang:1.20.2-alpine
 
 # Set the working directory inside the container
 WORKDIR /build

@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"T_Booking_System/database"
+	"T_Booking_System/models"
 	"crypto/rand"
 	"encoding/hex"
-	"flurn_assignment/database"
-	"flurn_assignment/models"
 	"strconv"
 )
 

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"flurn_assignment/controllers"
-	"flurn_assignment/database"
+	"T_Booking_System/controllers"
+	"T_Booking_System/database"
 	"fmt"
 	"log"
 
@@ -15,7 +15,7 @@ func main() {
 		log.Fatal(err)
 	}
 	r := gin.Default()
-	fmt.Println("Welcome to Flurn API's")
+	fmt.Println("Welcome to Ticket bookings")
 
 	r.GET("/seats", controllers.GetAllSeats)
 	r.GET("/seats/:seat_identifier", controllers.GetSeatPricing)

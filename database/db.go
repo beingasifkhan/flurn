@@ -1,9 +1,9 @@
 package database
 
 import (
+	"T_Booking_System/models"
 	"bufio"
 	"encoding/csv"
-	"flurn_assignment/models"
 	"fmt"
 	"log"
 	"os"
